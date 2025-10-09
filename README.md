@@ -102,7 +102,7 @@ docker run -p 3000:3000 ghcr.io/jae-jae/fetcher-mcp:latest
 Create a `docker-compose.yml` file:
 
 ```yaml
-version: "3.8"
+version: '3.8'
 
 services:
   fetcher-mcp:
@@ -110,7 +110,7 @@ services:
     container_name: fetcher-mcp
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
     # Using host network mode on Linux hosts can improve browser access efficiency
@@ -120,7 +120,7 @@ services:
       - /tmp:/tmp
     # Health check
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -151,11 +151,23 @@ docker-compose up -d
     - `debug`: Whether to enable debug mode (showing browser window), overrides the --debug command line flag if specified
 
 - `fetch_urls` - Batch retrieve web page content from multiple URLs in parallel
+
   - Uses multi-tab parallel fetching for improved performance
   - Returns combined results with clear separation between webpages
   - Supports the following parameters:
     - `urls`: Array of URLs to fetch (required parameter)
     - Other parameters are the same as `fetch_url`
+
+- `get_link` - Extract clickable links from a specified web page
+
+  - Returns a list of links with absolute URLs when possible and their titles/text
+  - Supported link sources: HTML anchors (`<a href>`), SVG anchors (`<a href>`/`<a xlink:href>`), image map areas (`<area href>`), elements with `data-href`, and elements with `onclick` that navigate via `window.open(...)` or `location(.href)=...`
+  - Ignores non-navigational schemes: `javascript:`, `mailto:`, `tel:`, `data:`, and page-internal fragments (`#`)
+  - Resolves relative URLs against the input URL origin, handling leading/trailing `/` correctly
+  - Supports the following parameters:
+    - `url`: URL to fetch (required)
+    - `timeout`: Page loading timeout in milliseconds, default is 30000 (30 seconds)
+    - `waitUntil`: When navigation is considered complete: `load` | `domcontentloaded` | `networkidle` | `commit` (default `load`)
 
 - `browser_install` - Install Playwright Chromium browser binary automatically
 
@@ -285,4 +297,4 @@ node build/index.js --debug
 
 Licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
 
-[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com 'Powered by DartNode - Free VPS for Open Source')

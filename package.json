@@ -1,5 +1,5 @@
 {
-  "name": "fetcher-mcp",
+  "name": "@jtsang/fetcher-mcp",
   "version": "0.3.3",
   "description": "MCP server for fetching web content using Playwright browser",
   "private": false,
