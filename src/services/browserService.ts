@@ -1,6 +1,9 @@
 import { Browser, BrowserContext, Page, chromium } from "playwright";
 import { logger } from "../utils/logger.js";
 import { FetchOptions } from "../types/index.js";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /**
  * Service for managing browser instances with anti-detection features
@@ -64,6 +67,22 @@ export class BrowserService {
    * Setup anti-detection script to evade browser automation detection
    */
   private async setupAntiDetection(context: BrowserContext): Promise<void> {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const candidatePaths = [
+      resolve(__dirname, "../libs/stealth.min.js"),
+      resolve(__dirname, "../../src/libs/stealth.min.js"),
+      resolve(process.cwd(), "src/libs/stealth.min.js"),
+    ];
+
+    for (const p of candidatePaths) {
+      if (existsSync(p)) {
+        const stealthScript = readFileSync(p, "utf-8");
+        await context.addInitScript(stealthScript);
+        break;
+      }
+    }
+
     await context.addInitScript(() => {
       // Override navigator.webdriver
       Object.defineProperty(navigator, 'webdriver', {
